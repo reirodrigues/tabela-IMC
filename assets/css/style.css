@@ -80,30 +80,16 @@ form button:hover {
   background: var(--primary-color-darker);
 }
 
-/*-------------------------- div Resposta*/
+/*-------------------------- div Resultado */
 
-.resposta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.paragrafo-resultado {
+  background-color: rgb(36, 164, 238);
+  padding: 10px 20px;
 }
 
-.green {
-  background-color: green;
-  border-radius: 5px;
-  color: #fff;
-}
-
-.red {
+.bad {
+  padding: 10px 20px;
   background-color: red;
-  border-radius: 5px;
-  color: #fff;
-}
-
-.yellow {
-  background-color: gold;
-  border-radius: 5px;
-  color: black;
 }
 
 /*------------------------- Media */

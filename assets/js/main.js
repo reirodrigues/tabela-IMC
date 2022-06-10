@@ -1,104 +1,81 @@
 function main() {
-  const form = document.querySelector('.form')
-  const resposta = document.querySelector('.resposta')
+  // Capturando o form / div. por meio de id.
+  const form = document.querySelector('#formulario')
 
-  function recebeEventoForm(evento) {
-    evento.preventDefault()
+  // Prevenção do envião do butão, com função anônima.
+  form.addEventListener('submit', function (e) {
+    e.preventDefault()
+    // Pegando os eventos nos inputs
+    const inputPeso = e.target.querySelector('#peso') // Ou form.querySelector('#peso');
+    const inputAltura = e.target.querySelector('#altura') // Ou form.querySelector('#altura');
+    // Pegando os valores dos inputs
+    const peso = Number(inputPeso.value)
+    const altura = Number(inputAltura.value)
 
-    const peso = form.querySelector('#peso')
-    const altura = form.querySelector('#altura')
-
-    const resultado = peso.value / (altura.value * altura.value)
-
-    function green() {
-      resposta.classList.add('green')
-    }
-    function red() {
-      resposta.classList.add('red')
-    }
-    function yellow() {
-      resposta.classList.add('yellow')
-    }
-
-    function removeGreen() {
-      resposta.classList.remove('green')
-    }
-    function removeRed() {
-      resposta.classList.remove('red')
-    }
-    function removeYellow() {
-      resposta.classList.remove('yellow')
-    }
-
-    if (
-      peso.value === 0 ||
-      peso.value === '' ||
-      peso.value === null ||
-      peso.value === NaN
-    ) {
-      resposta.innerHTML = `<p>Peso invalido</p>`
-      red()
-      removeGreen()
-      removeYellow()
-      return
-    } else if (
-      altura.value === 0 ||
-      altura.value === '' ||
-      altura.value === null ||
-      altura.value === NaN
-    ) {
-      resposta.innerHTML = `<p>Altura invalido</p>`
-      red()
-      removeGreen()
-      removeYellow()
+    //Checando se são validos diferentes de Number
+    if (!peso) {
+      setResultado('Peso inválido', false)
       return
     }
 
-    if (resultado < 18.5) {
-      green()
-      removeRed()
-      removeYellow()
-      resposta.innerHTML = `<p>Seu IMC é ${resultado.toFixed(
-        2
-      )} (Abaixo do peso)</p>`
-    } else if (resultado <= 24.9) {
-      green()
-      removeRed()
-      removeYellow()
-      resposta.innerHTML = `<p>Seu IMC é ${resultado.toFixed(
-        2
-      )} (Peso normal)</p>`
-    } else if (resultado <= 29.9) {
-      yellow()
-      removeRed()
-      removeGreen()
-      resposta.innerHTML = `<p>Seu IMC é ${resultado.toFixed(
-        2
-      )} (Sobrepeso)</p>`
-    } else if (resultado <= 34.9) {
-      red()
-      removeGreen()
-      removeYellow()
-      resposta.innerHTML = `<p>Seu IMC é ${resultado.toFixed(
-        2
-      )} (Obesidade grau 1)</p>`
-    } else if (resultado <= 39.9) {
-      red()
-      removeGreen()
-      removeYellow()
-      resposta.innerHTML = `<p>Seu IMC é ${resultado.toFixed(
-        2
-      )} (Obesidade grau 2)</p>`
+    if (!altura) {
+      setResultado('Altura inválido', false)
+      return
+    }
+
+    const imc = getImc(peso, altura)
+    const nivelImc = getNivelImc(imc)
+
+    const msg = `Seu IMC é ${imc} (${nivelImc}).`
+
+    setResultado(msg, true)
+  })
+
+  // Criando o Paragrafo
+  function criaP() {
+    const p = document.createElement('p')
+    return p
+  }
+
+  // Função para setar o resultado na div
+  function setResultado(msg, isValid) {
+    const resultado = document.querySelector('#resultado')
+    resultado.innerHTML = ''
+    const p = criaP()
+    p.innerHTML = msg
+    resultado.appendChild(p)
+
+    if (isValid) {
+      p.classList.add('paragrafo-resultado')
     } else {
-      red()
-      removeGreen()
-      removeYellow()
-      resposta.innerHTML = `<p>Seu IMC é ${resultado.toFixed(
-        2
-      )} (Obesidade grau 3)</p>`
+      p.classList.add('bad')
     }
   }
-  form.addEventListener('submit', recebeEventoForm)
+
+  // Calcular valor do imc
+  function getImc(peso, altura) {
+    const imc = peso / altura ** 2
+    return imc.toFixed(2)
+  }
+
+  // Niveis do imc
+  function getNivelImc(imc) {
+    const nivel = [
+      'Abaixo do peso',
+      'Peso normal',
+      'Sobrepeso',
+      'Obesidade grau 1',
+      'Obesidade grau 2',
+      'Obesidade grau 3'
+    ]
+
+    if (imc >= 40) return nivel[5]
+    if (imc >= 35) return nivel[4]
+    if (imc >= 30) return nivel[3]
+    if (imc >= 25) return nivel[2]
+    if (imc >= 18.5) return nivel[1]
+    if (imc < 18.5) return nivel[0]
+  }
 }
 
 main()
